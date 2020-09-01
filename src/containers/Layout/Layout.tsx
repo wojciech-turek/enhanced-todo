@@ -1,5 +1,6 @@
 import React from "react";
 import AuthPage from "../../pages/AuthPage/AuthPage";
+import SignUpPage from "../../pages/SignUpPage/SignUpPage";
 import { Route, Switch, Redirect } from "react-router";
 import { connect } from "react-redux";
 import { StateProps } from "../../interfaces/interfaces";
@@ -12,6 +13,9 @@ function Layout(props: { auth: boolean }) {
       </Route>
       <Route path="/login">
         <AuthPage />
+      </Route>
+      <Route path="/signup">
+        <SignUpPage />
       </Route>
     </Switch>
   );

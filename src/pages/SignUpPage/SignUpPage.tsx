@@ -34,6 +34,7 @@ function AuthPage(props: AuthProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [validEmail, setValidEmail] = useState(true);
+  const [validPassword, setValidPassword] = useState(true);
 
   const validateEmail = () => {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -43,10 +44,14 @@ function AuthPage(props: AuthProps) {
     }
   };
 
+  const validatePassword = () => {
+    const re = /^(?=.*\d).{8,}$/;
+    setValidPassword(re.test(String(password).toLowerCase()));
+  };
   const handleSubmit = (event?: React.FormEvent) => {
     if (event !== undefined) event.preventDefault();
-    if (validEmail) {
-      props.onLogInRequest(username, password);
+    if (validEmail && validPassword) {
+      console.log("registering...");
     }
   };
 
@@ -62,7 +67,7 @@ function AuthPage(props: AuthProps) {
   const CustomLink = React.useMemo(
     () =>
       React.forwardRef((linkProps, _) => (
-        <RouterLink to={"signup"} {...linkProps} />
+        <RouterLink to={"login"} {...linkProps} />
       )),
     []
   );
@@ -74,7 +79,7 @@ function AuthPage(props: AuthProps) {
         <CssBaseline />
         <div className={classes.paper}>
           <Typography component="h1" variant="h5">
-            Sign in
+            Register New Account
           </Typography>
           <form
             className={classes.form}
@@ -106,22 +111,29 @@ function AuthPage(props: AuthProps) {
               type="password"
               id="password"
               autoComplete="current-password"
+              onBlur={validatePassword}
               value={password}
+              error={!validPassword}
               onChange={(e) => handleInput(e)}
+              helperText={
+                !validPassword
+                  ? "Password must be at least 8 characters long and include one digit"
+                  : ""
+              }
             />
             <Button
               type="submit"
               fullWidth
               variant="contained"
-              color="primary"
+              color="secondary"
               className={classes.submit}
             >
-              Log in
+              Register
             </Button>
             <Grid container>
               <Grid item>
                 <Link href="#" variant="body2" component={CustomLink}>
-                  {"Don't have an account? Sign Up"}
+                  {"Already have an account? Sign In"}
                 </Link>
               </Grid>
             </Grid>

@@ -1,4 +1,4 @@
-import * as actionTypes from "./authactions";
+import * as actionTypes from "./actionTypes";
 
 interface ReducerState {
   authenticated: boolean;
@@ -16,7 +16,7 @@ interface AuthAction {
 
 const todos = (state = initialState, action: AuthAction) => {
   switch (action.type) {
-    case actionTypes.LOGIN:
+    case actionTypes.AUTH_START:
       console.log(action.user, action.pass);
       return {
         ...state,
