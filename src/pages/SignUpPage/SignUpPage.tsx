@@ -6,9 +6,10 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Link from "@material-ui/core/Link";
-import { AuthProps, StateProps } from "../../interfaces/interfaces";
+import { RegisterProps, StateProps } from "../../interfaces/interfaces";
 import * as actions from "../../store/actions/index";
 import { Link as RouterLink } from "react-router-dom";
+import Spinner from "../../UI/Spinner";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -30,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function AuthPage(props: AuthProps) {
+function RegisterPage(props: RegisterProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [validEmail, setValidEmail] = useState(true);
@@ -51,7 +52,9 @@ function AuthPage(props: AuthProps) {
   const handleSubmit = (event?: React.FormEvent) => {
     if (event !== undefined) event.preventDefault();
     if (validEmail && validPassword) {
-      console.log("registering...");
+      props.onRegisterRequest(username, password);
+      setUsername("");
+      setPassword("");
     }
   };
 
@@ -71,7 +74,6 @@ function AuthPage(props: AuthProps) {
       )),
     []
   );
-
   const classes = useStyles();
   return (
     <Fade in={true} timeout={400}>
@@ -81,11 +83,14 @@ function AuthPage(props: AuthProps) {
           <Typography component="h1" variant="h5">
             Register New Account
           </Typography>
+
           <form
             className={classes.form}
             autoComplete="off"
             onSubmit={handleSubmit}
           >
+            {props.loading ? <Spinner /> : " "}
+            {props.error ? <p>{props.error}</p> : " "}
             <TextField
               variant="outlined"
               margin="normal"
@@ -101,6 +106,7 @@ function AuthPage(props: AuthProps) {
               error={!validEmail}
               helperText={!validEmail ? "Please enter a valid Email" : ""}
             />
+
             <TextField
               variant="outlined"
               margin="normal"
@@ -138,7 +144,6 @@ function AuthPage(props: AuthProps) {
               </Grid>
             </Grid>
           </form>
-          <p>{props.auth ? "I am auth" : "I am not auth"}</p>
         </div>
       </Container>
     </Fade>
@@ -147,15 +152,17 @@ function AuthPage(props: AuthProps) {
 
 const mapStateToProps = (state: StateProps) => {
   return {
-    auth: state.authenticated,
+    auth: state.auth.authenticated,
+    loading: state.auth.loading,
+    error: state.auth.error,
   };
 };
 
 const mapDispatchToProps = (dispatch: Function) => {
   return {
-    onLogInRequest: (username: string, password: string) =>
-      dispatch(actions.login(username, password)),
+    onRegisterRequest: (username: string, password: string) =>
+      dispatch(actions.signup(username, password)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AuthPage);
+export default connect(mapStateToProps, mapDispatchToProps)(RegisterPage);

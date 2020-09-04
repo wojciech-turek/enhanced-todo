@@ -7,10 +7,10 @@ export const loginRequest = () => {
   };
 };
 
-export const loginSuccess = (authData: { username: string; pass: string }) => {
+export const loginSuccess = (response: Response) => {
+  console.log(response);
   return {
     type: actionTypes.AUTH_SUCCESS,
-    authData: authData,
   };
 };
 
@@ -24,8 +24,20 @@ export const loginFail = (error: Error) => {
 export const login = (email: string, password: string) => {
   return (dispatch: any) => {
     dispatch(loginRequest());
-    axios.post(
-      "https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=key"
-    );
+    axios({
+      method: "post",
+      url: `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.REACT_APP_GOOGLE_API_KEY}`,
+      data: {
+        email: email,
+        password: password,
+        returnSecureToken: true,
+      },
+    })
+      .then((response) => {
+        dispatch(loginSuccess(response.data));
+      })
+      .catch((error) => {
+        dispatch(loginFail(error.response.data.error.message));
+      });
   };
 };

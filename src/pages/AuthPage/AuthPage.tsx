@@ -9,6 +9,7 @@ import Link from "@material-ui/core/Link";
 import { AuthProps, StateProps } from "../../interfaces/interfaces";
 import * as actions from "../../store/actions/index";
 import { Link as RouterLink } from "react-router-dom";
+import Spinner from "../../UI/Spinner";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -81,6 +82,9 @@ function AuthPage(props: AuthProps) {
             autoComplete="off"
             onSubmit={handleSubmit}
           >
+            {props.loading ? <Spinner /> : " "}
+            {props.error ? <p>{props.error}</p> : " "}
+            {props.auth ? "Logowanie pomyślne" : null}
             <TextField
               variant="outlined"
               margin="normal"
@@ -126,7 +130,6 @@ function AuthPage(props: AuthProps) {
               </Grid>
             </Grid>
           </form>
-          <p>{props.auth ? "I am auth" : "I am not auth"}</p>
         </div>
       </Container>
     </Fade>
@@ -135,7 +138,9 @@ function AuthPage(props: AuthProps) {
 
 const mapStateToProps = (state: StateProps) => {
   return {
-    auth: state.authenticated,
+    auth: state.auth.authenticated,
+    loading: state.auth.loading,
+    error: state.auth.error,
   };
 };
 
