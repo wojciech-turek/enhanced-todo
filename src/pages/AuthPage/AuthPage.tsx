@@ -8,8 +8,9 @@ import Grid from "@material-ui/core/Grid";
 import Link from "@material-ui/core/Link";
 import { AuthProps, StateProps } from "../../interfaces/interfaces";
 import * as actions from "../../store/actions/index";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, Redirect } from "react-router-dom";
 import Spinner from "../../UI/Spinner";
+import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -35,6 +36,7 @@ function AuthPage(props: AuthProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [validEmail, setValidEmail] = useState(true);
+  const [redirect, setRedirect] = useState(false);
 
   const validateEmail = () => {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -60,6 +62,23 @@ function AuthPage(props: AuthProps) {
     }
   };
 
+  const getErrorMessage = (error: string) => {
+    switch (error) {
+      case "EMAIL_NOT_FOUND":
+        return "There is no account under that email address";
+      case "INVALID_PASSWORD":
+        return "Password is incorrect";
+      case "USER_DISABLED":
+        return "This user has been disabled";
+      default:
+        return "Error";
+    }
+  };
+
+  const startRedirect = () => {
+    setTimeout(() => setRedirect(true), 1500);
+  };
+
   const CustomLink = React.useMemo(
     () =>
       React.forwardRef((linkProps, _) => (
@@ -83,8 +102,22 @@ function AuthPage(props: AuthProps) {
             onSubmit={handleSubmit}
           >
             {props.loading ? <Spinner /> : " "}
-            {props.error ? <p>{props.error}</p> : " "}
-            {props.auth ? "Logowanie pomyślne" : null}
+            {props.error ? (
+              <Alert severity="error">{getErrorMessage(props.error)}</Alert>
+            ) : (
+              " "
+            )}
+            {props.auth ? (
+              <>
+                <Alert severity="success">
+                  Login successful! Taking you to the app!
+                </Alert>
+                {startRedirect()}
+                {redirect ? <Redirect to="/todoapp" /> : null}
+              </>
+            ) : (
+              " "
+            )}
             <TextField
               variant="outlined"
               margin="normal"
@@ -140,7 +173,7 @@ const mapStateToProps = (state: StateProps) => {
   return {
     auth: state.auth.authenticated,
     loading: state.auth.loading,
-    error: state.auth.error,
+    error: state.auth.authError,
   };
 };
 

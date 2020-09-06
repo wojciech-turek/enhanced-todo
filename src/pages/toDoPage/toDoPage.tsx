@@ -1,11 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Button } from "@material-ui/core";
+import { Button, Fade } from "@material-ui/core";
 
 export const toDoPage = () => {
   return (
     <div>
-      Witaj na stronie todo app!<Button>Wyloguj</Button>
+      <Fade in={true} timeout={400}>
+        <Button>Wyloguj</Button>
+      </Fade>
     </div>
   );
 };

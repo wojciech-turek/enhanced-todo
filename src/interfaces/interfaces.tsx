@@ -2,7 +2,8 @@ export interface StateProps {
   auth: {
     authenticated: boolean;
     loading: boolean;
-    error: string;
+    regError: string;
+    authError: string;
   };
 }
 export interface AuthProps {

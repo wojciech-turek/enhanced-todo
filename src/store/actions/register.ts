@@ -19,7 +19,8 @@ export const regSuccess = (token: string, userId: string) => {
 export const regFail = (error: any) => {
   return {
     type: actionTypes.REGISTER_FAIL,
-    error: error,
+    regError: error,
+    authenticated: false,
   };
 };
 

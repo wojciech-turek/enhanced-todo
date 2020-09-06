@@ -4,7 +4,8 @@ interface ReducerState {
   authenticated: boolean;
   token: string;
   userID: string;
-  error?: string;
+  authError?: string;
+  regError?: string;
   loading: boolean;
 }
 
@@ -13,7 +14,8 @@ const initialState: ReducerState = {
   token: "",
   userID: "",
   loading: false,
-  error: "",
+  authError: "",
+  regError: "",
 };
 
 interface AuthAction {
@@ -22,7 +24,8 @@ interface AuthAction {
   pass: string;
   idToken: string;
   userId: string;
-  error: Error;
+  regError: Error;
+  authError: Error;
 }
 
 const todos = (state = initialState, action: AuthAction) => {
@@ -30,13 +33,13 @@ const todos = (state = initialState, action: AuthAction) => {
     case actionTypes.REGISTER_START:
       return {
         ...state,
-        error: null,
+        regError: null,
         loading: true,
       };
     case actionTypes.REGISTER_SUCCESS:
       return {
         ...state,
-        error: null,
+        regError: null,
         token: action.idToken,
         userID: action.userId,
         loading: false,
@@ -45,20 +48,20 @@ const todos = (state = initialState, action: AuthAction) => {
     case actionTypes.REGISTER_FAIL:
       return {
         ...state,
-        error: action.error,
+        regError: action.regError,
         loading: false,
         authenticated: false,
       };
     case actionTypes.AUTH_START:
       return {
         ...state,
-        error: null,
+        authError: null,
         loading: true,
       };
     case actionTypes.AUTH_SUCCESS:
       return {
         ...state,
-        error: null,
+        authError: null,
         token: action.idToken,
         userID: action.userId,
         loading: false,
@@ -67,7 +70,7 @@ const todos = (state = initialState, action: AuthAction) => {
     case actionTypes.AUTH_FAIL:
       return {
         ...state,
-        error: action.error,
+        authError: action.authError,
         loading: false,
         authenticated: false,
       };

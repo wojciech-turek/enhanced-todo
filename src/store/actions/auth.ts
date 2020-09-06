@@ -17,7 +17,7 @@ export const loginSuccess = (response: Response) => {
 export const loginFail = (error: Error) => {
   return {
     type: actionTypes.AUTH_FAIL,
-    error: error,
+    authError: error,
   };
 };
 
