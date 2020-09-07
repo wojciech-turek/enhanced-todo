@@ -17,7 +17,7 @@ The application uses "more than necessary" tools for the task hoping that it can
 
 ## Installation
 
-Clone the repository and se the npm package manager to install the project on your computer.
+Clone the repository and use the npm package manager to install the project on your computer.
 
 ```git
 git clone https://github.com/wojciech-turek/enhanced-todo.git
