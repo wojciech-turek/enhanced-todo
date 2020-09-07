@@ -1,7 +1,7 @@
 # Enhanced ToDo App
 
 This application is a ToDo app that allow users to log in to their profiles, and manage their tasks.
-The tasks are saved in database linked to idividual user id.
+The tasks are saved in database linked to individual user id.
 
 ## Features
 
