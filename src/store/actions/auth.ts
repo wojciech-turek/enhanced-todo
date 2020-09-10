@@ -7,10 +7,12 @@ export const loginRequest = () => {
   };
 };
 
-export const loginSuccess = (response: Response) => {
-  console.log(response);
+export const loginSuccess = (token: string, userId: string) => {
   return {
     type: actionTypes.AUTH_SUCCESS,
+    idToken: token,
+    userId: userId,
+    authenticated: true,
   };
 };
 
@@ -18,6 +20,20 @@ export const loginFail = (error: Error) => {
   return {
     type: actionTypes.AUTH_FAIL,
     authError: error,
+  };
+};
+
+export const logout = () => {
+  return {
+    type: actionTypes.AUTH_LOGOUT,
+  };
+};
+
+export const checkAuthTimeout = (expirationTime: string) => {
+  return (dispatch: any) => {
+    setTimeout(() => {
+      dispatch(logout());
+    }, 3600 * 1000);
   };
 };
 
@@ -34,7 +50,8 @@ export const login = (email: string, password: string) => {
       },
     })
       .then((response) => {
-        dispatch(loginSuccess(response.data));
+        dispatch(loginSuccess(response.data.idToken, response.data.localId));
+        dispatch(checkAuthTimeout(response.data.expiresIn));
       })
       .catch((error) => {
         dispatch(loginFail(error.response.data.error.message));

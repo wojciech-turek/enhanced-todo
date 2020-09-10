@@ -1,3 +1,5 @@
+import { ChangeEvent } from "react";
+
 export interface StateProps {
   auth: {
     authenticated: boolean;
@@ -17,4 +19,17 @@ export interface RegisterProps {
   onRegisterRequest: Function;
   loading: boolean;
   error: string;
+}
+
+export interface TaskProps {
+  timestamp: {
+    date: string;
+    time: string;
+  };
+  category: string;
+  content: string;
+  active: boolean;
+  deadline: string;
+  changeActive: any;
+  id: string;
 }

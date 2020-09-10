@@ -3,7 +3,7 @@ import * as actionTypes from "./actionTypes";
 interface ReducerState {
   authenticated: boolean;
   token: string;
-  userID: string;
+  userId: string;
   authError?: string;
   regError?: string;
   loading: boolean;
@@ -12,7 +12,7 @@ interface ReducerState {
 const initialState: ReducerState = {
   authenticated: false,
   token: "",
-  userID: "",
+  userId: "",
   loading: false,
   authError: "",
   regError: "",
@@ -41,7 +41,7 @@ const todos = (state = initialState, action: AuthAction) => {
         ...state,
         regError: null,
         token: action.idToken,
-        userID: action.userId,
+        userId: action.userId,
         loading: false,
         authenticated: true,
       };
@@ -63,7 +63,7 @@ const todos = (state = initialState, action: AuthAction) => {
         ...state,
         authError: null,
         token: action.idToken,
-        userID: action.userId,
+        userId: action.userId,
         loading: false,
         authenticated: true,
       };
@@ -73,6 +73,13 @@ const todos = (state = initialState, action: AuthAction) => {
         authError: action.authError,
         loading: false,
         authenticated: false,
+      };
+    case actionTypes.AUTH_LOGOUT:
+      return {
+        ...state,
+        authenticated: false,
+        token: null,
+        userId: null,
       };
     default:
       return state;

@@ -24,6 +24,20 @@ export const regFail = (error: any) => {
   };
 };
 
+export const logout = () => {
+  return {
+    type: actionTypes.AUTH_LOGOUT,
+  };
+};
+
+export const checkAuthTimeout = (expirationTime: string) => {
+  return (dispatch: any) => {
+    setTimeout(() => {
+      dispatch(logout());
+    }, 3600 * 100);
+  };
+};
+
 export const signup = (email: string, password: string) => {
   return (dispatch: any) => {
     dispatch(regStart());
@@ -38,6 +52,7 @@ export const signup = (email: string, password: string) => {
     })
       .then((response) => {
         dispatch(regSuccess(response.data.idToken, response.data.localId));
+        dispatch(checkAuthTimeout(response.data.expiresIn));
       })
       .catch((error) => {
         dispatch(regFail(error.response.data.error.message));
