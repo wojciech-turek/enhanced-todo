@@ -29,11 +29,11 @@ export const logout = () => {
   };
 };
 
-export const checkAuthTimeout = (expirationTime: string) => {
+export const checkAuthTimeout = (expirationTime: number) => {
   return (dispatch: any) => {
     setTimeout(() => {
       dispatch(logout());
-    }, 3600 * 1000);
+    }, expirationTime * 1000);
   };
 };
 

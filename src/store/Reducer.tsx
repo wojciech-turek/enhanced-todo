@@ -7,6 +7,7 @@ interface ReducerState {
   authError?: string;
   regError?: string;
   loading: boolean;
+  addTaskSuccess: boolean;
 }
 
 const initialState: ReducerState = {
@@ -16,6 +17,7 @@ const initialState: ReducerState = {
   loading: false,
   authError: "",
   regError: "",
+  addTaskSuccess: false,
 };
 
 interface AuthAction {
@@ -80,6 +82,23 @@ const todos = (state = initialState, action: AuthAction) => {
         authenticated: false,
         token: null,
         userId: null,
+      };
+    case actionTypes.NEW_TASK_START:
+      return {
+        ...state,
+        loading: true,
+      };
+    case actionTypes.NEW_TASK_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        addTaskSuccess: true,
+      };
+    case actionTypes.NEW_TASK_FAIL:
+      return {
+        ...state,
+        loading: false,
+        addTaskSuccess: false,
       };
     default:
       return state;

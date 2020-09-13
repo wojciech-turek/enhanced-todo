@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import { Provider } from "react-redux";
 import { createStore, compose, applyMiddleware, combineReducers } from "redux";
-import authReducer from "./store/todosreducer";
+import authReducer from "./store/Reducer";
 import thunk from "redux-thunk";
 
 declare global {

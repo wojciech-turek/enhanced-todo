@@ -10,12 +10,14 @@ import Avatar from "@material-ui/core/Avatar";
 import { red } from "@material-ui/core/colors";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
+import BlurOnIcon from "@material-ui/icons/BlurOn";
 
 const useStyles = makeStyles({
   root: {
     padding: 0,
     margin: 0,
     width: "100%",
+    wordBreak: "break-word",
   },
   text: {
     fontSize: 14,
@@ -30,9 +32,10 @@ const useStyles = makeStyles({
   avatar: {
     backgroundColor: red[500],
   },
+  checkbox: {
+    marginLeft: 4,
+  },
 });
-
-const workIcon = <WorkIcon />;
 
 const Task = (props: TaskProps) => {
   const classes = useStyles();
@@ -41,15 +44,18 @@ const Task = (props: TaskProps) => {
       <CardHeader
         avatar={
           <Avatar aria-label="recipe" className={classes.avatar}>
-            {props.category === "Work" ? workIcon : null}
+            {props.category === "Work" ? <WorkIcon /> : null}
             {props.category === "Home" ? <HomeWorkIcon /> : null}
+            {props.category === "Other" ? <BlurOnIcon /> : null}
           </Avatar>
         }
+        titleTypographyProps={{ variant: "subtitle1" }}
         title={props.content}
         subheader={`Created on ${props.timestamp.date} at ${props.timestamp.time}`}
       />
       <CardActions>
         <FormControlLabel
+          className={classes.checkbox}
           control={
             <Checkbox
               id={props.id}
@@ -58,7 +64,9 @@ const Task = (props: TaskProps) => {
               onChange={(e: any) => props.changeActive(e.target.id)}
             />
           }
-          label="Mark as completed"
+          label={
+            props.active ? "Mark as completed" : "Uncheck to mark as active"
+          }
         />
       </CardActions>
     </Card>
