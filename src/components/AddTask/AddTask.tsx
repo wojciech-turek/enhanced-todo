@@ -63,21 +63,15 @@ const AddTask = (props: {
   };
 
   const handleAddNewTask = () => {
-    const nowDate = new Date();
-    const deadline = new Date(
-      selectedDate.getFullYear(),
-      selectedDate.getMonth(),
-      selectedDate.getDate(),
-      selectedDate.getHours(),
-      selectedDate.getMinutes()
-    );
+    const nowDate = new Date().getTime();
+    const deadline = new Date(selectedDate).getTime();
     const task = {
       user: props.user,
-      created: nowDate.toLocaleString(),
+      created: nowDate,
       category: selectedCat,
       content: content,
       active: true,
-      deadline: deadline.toLocaleString(),
+      deadline: deadline,
     };
     if (validContent) {
       props.onTaskAddREquest(task, props.token);
@@ -85,6 +79,7 @@ const AddTask = (props: {
       setSelectedDate(new Date());
       setSelectedCat("");
     }
+    props.cancel();
   };
   return (
     <Container className={classes.container}>

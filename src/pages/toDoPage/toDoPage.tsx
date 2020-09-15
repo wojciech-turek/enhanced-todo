@@ -23,6 +23,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import Hidden from "@material-ui/core/Hidden";
 import AddTask from "../../components/AddTask/AddTask";
 import Alert from "@material-ui/lab/Alert";
+import { Link, Redirect } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => {
   const drawerWidth = 240;
@@ -82,7 +83,7 @@ function getModalStyle() {
     transform: `translate(-${top}%, -${left}%)`,
   };
 }
-function ToDoPage() {
+const ToDoPage = React.memo(function ToDoPage(props: { auth: boolean }) {
   const [newTaskOpen, setNewTaskOpen] = React.useState(false);
   const [newCategoryOpen, setNewCategoryOpen] = React.useState(false);
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -179,10 +180,11 @@ function ToDoPage() {
       </List>
     </Drawer>
   );
-
+  console.log(`Rendering ToDoPage`);
   return (
     <Fade in={true} timeout={400}>
       <div className={classes.root}>
+        {props.auth ? null : <Redirect to="/login" />}
         <CssBaseline />
         <ThemeProvider theme={theme}>
           <AppBar position="fixed" className={classes.appBar}>
@@ -199,9 +201,11 @@ function ToDoPage() {
               <Typography variant="h6" noWrap>
                 ToDo App
               </Typography>
-              <Button color="secondary" variant="contained">
-                Logout
-              </Button>
+              <Link to="/logout">
+                <Button color="secondary" variant="contained">
+                  Logout
+                </Button>
+              </Link>
             </Toolbar>
           </AppBar>
           <nav className={classes.drawer} aria-label="mailbox folders">
@@ -241,9 +245,11 @@ function ToDoPage() {
       </div>
     </Fade>
   );
-}
+});
 
-const mapStateToProps = () => ({});
+const mapStateToProps = (state: any) => ({
+  auth: state.auth.authenticated,
+});
 
 const mapDispatchToProps = {};
 

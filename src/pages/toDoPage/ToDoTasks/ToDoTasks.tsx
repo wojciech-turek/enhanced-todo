@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { connect } from "react-redux";
 import Container from "@material-ui/core/Container";
 import Collapse from "@material-ui/core/Collapse";
 import Task from "./Task/task";
@@ -8,6 +9,7 @@ import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
+import * as actions from "../../../store/actions/index";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,50 +20,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-let Tasks = [
-  {
-    id: "1",
-    timestamp: {
-      date: "08/09/2020",
-      time: "15:23",
-    },
-    category: "Work",
-    content: "Prepare yearly report.",
-    active: true,
-    deadline: "22/09/2020",
-  },
-  {
-    id: "2",
-    timestamp: {
-      date: "08/09/2020",
-      time: "15:28",
-    },
-    category: "Home",
-    content:
-      "Clean theasdasdsdfgaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa dishes",
-    active: true,
-    deadline: "18/09/2020",
-  },
-  {
-    id: "3",
-    timestamp: {
-      date: "08/09/2020",
-      time: "15:28",
-    },
-    category: "Other",
-    content: "Look for a new job",
-    active: false,
-    deadline: "28/09/2020",
-  },
-];
-
-const ToDoTasks = () => {
+const ToDoTasks = React.memo((props: any) => {
   const classes = useStyles();
   const [newOpen, setNewOpen] = React.useState(true);
   const [completedOpen, setCompletedOpen] = React.useState(false);
-  const [tasks, setTasks] = React.useState(Tasks);
-
-  useEffect((): any => {}, []);
+  const { token, onLoadTaskRequest } = props;
 
   const handleNewClick = (e: any) => {
     setNewOpen(!newOpen);
@@ -74,7 +37,13 @@ const ToDoTasks = () => {
     console.log(id);
   };
 
-  const compltedTaskArr = tasks.filter((el) => el.active === false);
+  useEffect(() => {
+    onLoadTaskRequest(token);
+  }, [token, onLoadTaskRequest]);
+
+  const compltedTaskArr = props.loaded
+    ? props.tasks.filter((el: any) => el.active === false)
+    : [];
   const completedTasks: any = compltedTaskArr.map((el: any) => {
     if (!el.active) {
       return (
@@ -93,26 +62,25 @@ const ToDoTasks = () => {
     }
     return null;
   });
-  const activeTasksArr = tasks.filter((el) => el.active === true);
+  const activeTasksArr = props.loaded
+    ? props.tasks.filter((el: any) => el.content.active === true)
+    : [];
   const activeTasks = activeTasksArr.map((el: any) => {
-    if (el.active) {
-      return (
-        <ListItem key={el.id}>
-          <Task
-            timestamp={el.timestamp}
-            category={el.category}
-            content={el.content}
-            active={el.active}
-            deadline={el.deadline}
-            changeActive={handleActiveChange}
-            id={el.id}
-          />
-        </ListItem>
-      );
-    }
-    return null;
+    return (
+      <ListItem key={el.key}>
+        <Task
+          timestamp={el.content.created}
+          category={el.content.category}
+          content={el.content.content}
+          active={el.content.active}
+          deadline={el.content.deadline}
+          changeActive={handleActiveChange}
+          id={el.content.id}
+        />
+      </ListItem>
+    );
   });
-
+  console.log(`Rendering ToDoTasks`);
   return (
     <div>
       <Container maxWidth={false}>
@@ -124,7 +92,9 @@ const ToDoTasks = () => {
             {newOpen ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
           <Collapse in={newOpen} timeout="auto">
-            <List component="div">{activeTasks}</List>
+            <List component="div">
+              {props.loading ? "loading" : activeTasks}
+            </List>
           </Collapse>
         </List>
         <List className={classes.root}>
@@ -135,12 +105,30 @@ const ToDoTasks = () => {
             {completedOpen ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
           <Collapse in={completedOpen} timeout="auto">
-            <List component="div">{completedTasks}</List>
+            <List component="div">
+              {props.loading ? "loading" : completedTasks}
+            </List>
           </Collapse>
         </List>
       </Container>
     </div>
   );
+});
+
+const mapStateToProps = (state: any) => {
+  return {
+    tasks: state.auth.tasks,
+    loading: state.auth.loading,
+    error: state.auth.loadTaskError,
+    token: state.auth.token,
+    loaded: state.auth.loadTaskSuccess,
+  };
 };
 
-export default ToDoTasks;
+const mapDispatchToProps = (dispatch: Function) => {
+  return {
+    onLoadTaskRequest: (token: string) => dispatch(actions.loadTasks(token)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ToDoTasks);

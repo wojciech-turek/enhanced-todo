@@ -11,6 +11,7 @@ import { red } from "@material-ui/core/colors";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import BlurOnIcon from "@material-ui/icons/BlurOn";
+import CardContent from "@material-ui/core/CardContent";
 
 const useStyles = makeStyles({
   root: {
@@ -38,6 +39,20 @@ const useStyles = makeStyles({
 });
 
 const Task = (props: TaskProps) => {
+  function convertMS(milliseconds: number) {
+    var day, hour, minute, seconds;
+    seconds = Math.floor(milliseconds / 1000);
+    minute = Math.floor(seconds / 60);
+    seconds = seconds % 60;
+    hour = Math.floor(minute / 60);
+    minute = minute % 60;
+    day = Math.floor(hour / 24);
+    hour = hour % 24;
+    return `${day > 0 ? day + " days," : ""} ${
+      hour > 0 ? hour + " hours," : ""
+    } ${minute} minutes and ${seconds} seconds left to complete it.`;
+  }
+
   const classes = useStyles();
   return (
     <Card className={classes.root}>
@@ -51,8 +66,19 @@ const Task = (props: TaskProps) => {
         }
         titleTypographyProps={{ variant: "subtitle1" }}
         title={props.content}
-        subheader={`Created on ${props.timestamp.date} at ${props.timestamp.time}`}
+        subheader={`Created on ${new Date(props.timestamp).toLocaleString()}`}
       />
+      <CardContent>
+        {`The deadline for this task is on ${new Date(
+          props.deadline
+        ).toLocaleString()}`}
+        {
+          <p>
+            You still have
+            {convertMS(props.deadline - props.timestamp)}
+          </p>
+        }
+      </CardContent>
       <CardActions>
         <FormControlLabel
           className={classes.checkbox}

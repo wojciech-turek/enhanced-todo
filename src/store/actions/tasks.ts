@@ -18,6 +18,12 @@ export const addTaskFail = () => {
   };
 };
 
+export const loadTasksStart = () => {
+  return {
+    type: actionTypes.GET_TASKS_START,
+  };
+};
+
 export const loadTaskSuccess = (tasks: any) => {
   return {
     type: actionTypes.GET_TASKS_SUCCESS,
@@ -32,12 +38,16 @@ export const loadTaskFail = (error: Error) => {
   };
 };
 
-export const loadTasks = () => {
+export const loadTasks = (token: string) => {
   return (dispatch: any) => {
     axios
-      .get("https://mytodoapp-4bab3.firebaseio.com/tasks.json")
+      .get("https://mytodoapp-4bab3.firebaseio.com/tasks.json?auth=" + token)
       .then((response) => {
-        dispatch(loadTaskSuccess(response.data));
+        var myData = Object.keys(response.data).map((item) => ({
+          content: response.data[item],
+          key: [item],
+        }));
+        dispatch(loadTaskSuccess(myData));
       })
       .catch((error: Error) => {
         dispatch(loadTaskFail(error));
@@ -55,9 +65,7 @@ export const addTask = (task: any, token: string) => {
       )
       .then(() => {
         dispatch(addTaskSuccess());
-        setTimeout(() => {
-          dispatch(addTaskFail());
-        }, 1000);
+        dispatch(loadTasks(token));
       })
       .catch(() => {
         dispatch(addTaskFail());

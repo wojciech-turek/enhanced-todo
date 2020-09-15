@@ -20,14 +20,11 @@ export interface RegisterProps {
 }
 
 export interface TaskProps {
-  timestamp: {
-    date: string;
-    time: string;
-  };
+  timestamp: number;
   category: string;
   content: string;
   active: boolean;
-  deadline: string;
+  deadline: number;
   changeActive: any;
   id: string;
 }

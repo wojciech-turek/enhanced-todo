@@ -5,6 +5,7 @@ import { Route, Switch, Redirect } from "react-router";
 import { connect } from "react-redux";
 import { StateProps } from "../../interfaces/interfaces";
 import ToDoPage from "../../pages/toDoPage/toDoPage";
+import Logout from "../Logout/Logout";
 
 function Layout(props: { auth: boolean }) {
   let routes = (
@@ -21,9 +22,13 @@ function Layout(props: { auth: boolean }) {
       <Route path="/todoapp">
         <ToDoPage />
       </Route>
+      <Route path="/logout">
+        <Logout />
+      </Route>
+      <Redirect to="/login" />
     </Switch>
   );
-
+  console.log(`Rendering Layout`);
   return <>{routes}</>;
 }
 

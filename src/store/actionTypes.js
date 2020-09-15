@@ -12,5 +12,6 @@ export const NEW_TASK_START = "NEW_TASK_START";
 export const NEW_TASK_SUCCESS = "NEW_TASK_SUCCESS";
 export const NEW_TASK_FAIL = "NEW_TASK_FAIL";
 
+export const GET_TASKS_START = "GET TASK_START";
 export const GET_TASKS_SUCCESS = "GET TASK_SUCCESS";
 export const GET_TASKS_FAIL = "GET TASK_FAIL";

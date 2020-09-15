@@ -8,6 +8,9 @@ interface ReducerState {
   regError?: string;
   loading: boolean;
   addTaskSuccess: boolean;
+  tasks?: any;
+  loadTaskError?: string;
+  loadTaskSuccess: boolean;
 }
 
 const initialState: ReducerState = {
@@ -18,6 +21,9 @@ const initialState: ReducerState = {
   authError: "",
   regError: "",
   addTaskSuccess: false,
+  tasks: [],
+  loadTaskError: "",
+  loadTaskSuccess: false,
 };
 
 interface AuthAction {
@@ -28,6 +34,9 @@ interface AuthAction {
   userId: string;
   regError: Error;
   authError: Error;
+  tasks: any;
+  loadTaskSuccess: boolean;
+  loadTaskError: Error;
 }
 
 const todos = (state = initialState, action: AuthAction) => {
@@ -99,6 +108,25 @@ const todos = (state = initialState, action: AuthAction) => {
         ...state,
         loading: false,
         addTaskSuccess: false,
+      };
+    case actionTypes.GET_TASKS_START:
+      return {
+        ...state,
+        loading: true,
+      };
+    case actionTypes.GET_TASKS_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        tasks: action.tasks,
+        loadTaskSuccess: true,
+      };
+    case actionTypes.GET_TASKS_FAIL:
+      return {
+        ...state,
+        loading: false,
+        loadTaskError: action.loadTaskError,
+        loadTaskSuccess: false,
       };
     default:
       return state;

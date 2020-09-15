@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Button, Container, TextField, Fade } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: "100%", // Fix IE 11 issue.
+    width: "100%",
     marginTop: theme.spacing(1),
   },
   submit: {
@@ -37,6 +37,7 @@ function AuthPage(props: AuthProps) {
   const [password, setPassword] = useState("");
   const [validEmail, setValidEmail] = useState(true);
   const [redirect, setRedirect] = useState(false);
+  const { auth } = props;
 
   const validateEmail = () => {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -52,6 +53,14 @@ function AuthPage(props: AuthProps) {
       props.onLogInRequest(username, password);
     }
   };
+
+  useEffect(() => {
+    if (auth) {
+      setRedirect(true);
+    } else {
+      setRedirect(false);
+    }
+  }, [auth]);
 
   const handleInput = (e: { target: { id: string; value: string } }) => {
     if (e.target.id === "email") {
@@ -75,9 +84,18 @@ function AuthPage(props: AuthProps) {
     }
   };
 
-  const startRedirect = () => {
-    setTimeout(() => setRedirect(true), 1500);
-  };
+  // const startRedirect = () => {
+  //   let isSubscribed = true;
+  //   if (isSubscribed) {
+  //     const timer = setTimeout(() => {
+  //       setRedirect(true);
+  //       isSubscribed = false;
+  //       if (!isSubscribed) {
+  //         clearTimeout(timer);
+  //       }
+  //     }, 1500);
+  //   }
+  // };
 
   const CustomLink = React.useMemo(
     () =>
@@ -112,7 +130,6 @@ function AuthPage(props: AuthProps) {
                 <Alert severity="success">
                   Login successful! Taking you to the app!
                 </Alert>
-                {startRedirect()}
                 {redirect ? <Redirect to="/todoapp" /> : null}
               </>
             ) : (
